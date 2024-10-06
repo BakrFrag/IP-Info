@@ -14,7 +14,7 @@ def fetch_ip_info(self, ip, channel_name):
     Retries the task 3 times in case of failure.
     """
     try:
-        # Log task ID and retry attempt
+        logger.debug(f"receive request to fetch ip {ip} data for channel name {channel_name}")
         logger.debug(f"Task {self.request.id} is in attempt {self.request.retries + 1}")
 
         # Fetch IP info
@@ -48,18 +48,11 @@ def fetch_ip_info(self, ip, channel_name):
         ip_data = {"ip": ip, "error": str(exc), "task_id": self.request.id}
         status = "error"
 
-    # Send result back to WebSocket client via Channels
+    logger.info(f"start process for sending ip data {ip_data} to channel name {channel_name}")
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.send)(channel_name, {
         "type": "send_ip_info",  # Triggers 'send_ip_info' method in WebSocket consumer
         "message": json.dumps({"status": status, **ip_data})
     })
 
-    return ip_data  # Returning the result in case it's needed
-
-    # # Send the result back to WebSocket client via Channels
-    # channel_layer = get_channel_layer()
-    # async_to_sync(channel_layer.send)(channel_name, {
-    #     "type": "send_ip_info",  # This triggers the 'send_ip_info' method in WebSocket consumer
-    #     "message": json.dumps({"status": status, **ip_data})
-    # })
+    return ip_data  

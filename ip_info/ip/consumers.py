@@ -51,7 +51,7 @@ class IPConsumer(AsyncWebsocketConsumer):
                 # task_id = result.id
                 # asyncio.create_task(self.check_and_send_result(task_id))
                 
-                
+                logger.info(f"fire back ground task to fetch ip data for ip {ip} related channel name {self.channel_name}")
                 fetch_ip_info.apply_async(args=[ip, self.channel_name])
                 
         except json.JSONDecodeError as exc:
