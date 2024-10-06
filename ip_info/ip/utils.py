@@ -7,15 +7,11 @@ format_checker = FormatChecker()
 def is_ipv4(instance):
     """
     validate against ipv4
-    make sure parsed ip is public ip not of type [loopback, private]
+    make sure parsed ip is public ip not of type [loopback, private, private]
     """
     try:
         ip = ipaddress.IPv4Address(instance)
-        if ip.is_loopback:
-            raise ValidationError(f"IP {instance} is a loopback IP address.")
-        if ip.is_private:
-            raise ValidationError(f"IP {instance} is a private IP address.")
-        return True
+        return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved)
     except ValueError:
         return False
 
@@ -28,11 +24,7 @@ def is_ipv6(instance):
     """
     try:
         ip = ipaddress.IPv6Address(instance)
-        if ip.is_loopback:
-            raise ValidationError(f"IP {instance} is a loopback IP address.")
-        if ip.is_private:
-            raise ValidationError(f"IP {instance} is a private IP address.")
-        return True
+        return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved)
     except ValueError:
         return False
     
