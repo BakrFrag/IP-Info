@@ -23,7 +23,7 @@ class IPConsumer(AsyncWebsocketConsumer):
         """
         accept connection from user
         """
-        logger.info(f"WebSocket connected from {self.scope['client']}")
+        logger.info(f"WebSocket connected from {self.scope['client']} with channel name {self.channel_name} and layer {self.channel_layer}")
         await self.accept()
 
     async def disconnect(self):
@@ -46,13 +46,14 @@ class IPConsumer(AsyncWebsocketConsumer):
             await validate_ip(text_data_as_json)
             logger.info(f"data validation success include true schema with valid public ips")
             ips = text_data_as_json.get("ips")
-            # tasks = [self.send_ip_info(ip) for ip in ips]
-            # logger.info(f"start fire background tasks for ips {ips}")
-            # asyncio.gather(*tasks)
             for ip in ips:
-                result = fetch_ip_info.delay(ip)
-                task_id = result.id
-                asyncio.create_task(self.check_and_send_result(task_id))
+                # result = fetch_ip_info.delay(ip)
+                # task_id = result.id
+                # asyncio.create_task(self.check_and_send_result(task_id))
+                
+                
+                fetch_ip_info.apply_async(args=[ip, self.channel_name])
+                
         except json.JSONDecodeError as exc:
             logger.error(f"parsed data can't converted to json")
             await self.send(text_data = json.dumps({
@@ -65,34 +66,52 @@ class IPConsumer(AsyncWebsocketConsumer):
                 "status":"error",
                 "message": exc.message,
             }))
+
+    async def send_ip_info(self, event):
+        """
+        Handle messages sent by the Celery task (via Channels layer).
+        Send the result back to the WebSocket client.
+        """
+        print("event:",event)
+        print(type(event))
+        message = event['message']
+        logger.info(f"Sending result back to WebSocket client: {message}")
+        await self.send(text_data=message)
+                
+                
+        
+            
+            
     async def check_and_send_result(self, task_id):
         while True:
             result = AsyncResult(task_id)
             if result.status == 'SUCCESS':
                 await self.send(text_data=json.dumps({
                     'status': 'success',
-                    'ip_data': result.result
+                    'data': result.result
                 }))
                 break
             elif result.status == 'FAILURE':
                 await self.send(text_data=json.dumps({
                     'status': 'error',
-                    'message': 'Task failed'
+                    'message': 'Task failed',
+                    'details': str(result.result)
+                    
                 }))
                 break
             await asyncio.sleep(1)
                 
         
         
-    async def send_ip_info(self, ip):
-        """
-        send and get ip info
-        """
-        collected_data: Dict[str, str] = await self.get_ip_data(ip)
-        status: str = "failure" if collected_data.get("error") else "success"
-        logger.debug(f"data collected for ip as {collected_data} with status {status}")
-        await self.send(text_data = json.dumps({
-            "status": status, ** collected_data
-        }))
+    # async def send_ip_info(self, ip):
+    #     """
+    #     send and get ip info
+    #     """
+    #     collected_data: Dict[str, str] = await self.get_ip_data(ip)
+    #     status: str = "failure" if collected_data.get("error") else "success"
+    #     logger.debug(f"data collected for ip as {collected_data} with status {status}")
+    #     await self.send(text_data = json.dumps({
+    #         "status": status, ** collected_data
+    #     }))
             
     
