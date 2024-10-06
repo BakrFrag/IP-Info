@@ -74,7 +74,7 @@ print("password:",os.getenv("REDIS_PASSWORD"))
 # }
 
 #Channel Layer 
-CHANNEL_LAYERS = {
+CHANNEL_LAYER = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
