@@ -19,6 +19,9 @@ celery = "^5.4.0"
 channels-redis = "^4.2.0"
 
 
+[tool.poetry.group.dev.dependencies]
+flower = "^2.0.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

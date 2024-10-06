@@ -47,10 +47,6 @@ class IPConsumer(AsyncWebsocketConsumer):
             logger.info(f"data validation success include true schema with valid public ips")
             ips = text_data_as_json.get("ips")
             for ip in ips:
-                # result = fetch_ip_info.delay(ip)
-                # task_id = result.id
-                # asyncio.create_task(self.check_and_send_result(task_id))
-                
                 logger.info(f"fire back ground task to fetch ip data for ip {ip} related channel name {self.channel_name}")
                 fetch_ip_info.apply_async(args=[ip, self.channel_name])
                 
@@ -72,46 +68,8 @@ class IPConsumer(AsyncWebsocketConsumer):
         Handle messages sent by the Celery task (via Channels layer).
         Send the result back to the WebSocket client.
         """
-        print("event:",event)
-        print(type(event))
         message = event['message']
         logger.info(f"Sending result back to WebSocket client: {message}")
         await self.send(text_data=message)
                 
                 
-        
-            
-            
-    async def check_and_send_result(self, task_id):
-        while True:
-            result = AsyncResult(task_id)
-            if result.status == 'SUCCESS':
-                await self.send(text_data=json.dumps({
-                    'status': 'success',
-                    'data': result.result
-                }))
-                break
-            elif result.status == 'FAILURE':
-                await self.send(text_data=json.dumps({
-                    'status': 'error',
-                    'message': 'Task failed',
-                    'details': str(result.result)
-                    
-                }))
-                break
-            await asyncio.sleep(1)
-                
-        
-        
-    # async def send_ip_info(self, ip):
-    #     """
-    #     send and get ip info
-    #     """
-    #     collected_data: Dict[str, str] = await self.get_ip_data(ip)
-    #     status: str = "failure" if collected_data.get("error") else "success"
-    #     logger.debug(f"data collected for ip as {collected_data} with status {status}")
-    #     await self.send(text_data = json.dumps({
-    #         "status": status, ** collected_data
-    #     }))
-            
-    
