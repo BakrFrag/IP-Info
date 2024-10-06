@@ -5,17 +5,26 @@ format_checker = FormatChecker()
 
 @format_checker.checks("ipv4")
 def is_ipv4(instance):
+    """
+    validate against ipv4
+    make sure parsed ip is public ip not of type [reserved, loopback, private]
+    """
     try:
-        ipaddress.IPv4Address(instance)
-        return True
+        ip = ipaddress.IPv4Address(instance)
+        return not (ip.is_private or ip.is_reserved or ip.is_loopback)
     except ValueError:
         return False
 
+
 @format_checker.checks("ipv6")
 def is_ipv6(instance):
+    """
+    validate against ipv6
+    make sure parsed ip is public ip not of type [reserved, loopback, private]
+    """
     try:
-        ipaddress.IPv6Address(instance)
-        return True
+        ip = ipaddress.IPv6Address(instance)
+        return not (ip.is_private or ip.is_reserved or ip.is_loopback)
     except ValueError:
         return False
     
