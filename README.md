@@ -14,14 +14,15 @@ based on web sockets to achieve real time data , list of ips send to server  aft
    - the list of ip must include at least one valid ip 
    - reserved, private or loopback ips not allowed as these ips don't have public info 
    - the allowed is public ips which can be route over internet 
- ### Usage Example 
- - screen recorder for application usage 
- - URL 
+ 
 ### Application Logging
 
    - logging are allowed to application logging messages via stream handler 
    - default logging level is `DEBUG` 
    - custom logger used for all application parts 
+### Sequence Diagram   
+
+![Sequence Diagram](images/sequence_diagram.png)
 
 ### Libraries and packages 
 | Package  | Usage  |
