@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "ip-info"
+version = "0.1.0"
+description = "collect info about public ips"
+authors = ["bakrfrag"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
