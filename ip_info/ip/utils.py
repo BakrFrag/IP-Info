@@ -1,4 +1,24 @@
-from jsonschema import validate, ValidationError
+import ipaddress
+from jsonschema import validate, ValidationError, FormatChecker
+
+format_checker = FormatChecker()
+
+@format_checker.checks("ipv4")
+def is_ipv4(instance):
+    try:
+        ipaddress.IPv4Address(instance)
+        return True
+    except ValueError:
+        return False
+
+@format_checker.checks("ipv6")
+def is_ipv6(instance):
+    try:
+        ipaddress.IPv6Address(instance)
+        return True
+    except ValueError:
+        return False
+    
 
 SCHEMA = {
     "type": "object",
@@ -25,6 +45,6 @@ async def validate_ip(text_data: str):
     validate the parsed text is json and include valid IPS
     """
     try:
-        validate(instance = text_data, schema = SCHEMA)
+        validate(instance = text_data, schema = SCHEMA, format_checker = format_checker)
     except ValidationError as exc:
         raise ValidationError(exc.message)
