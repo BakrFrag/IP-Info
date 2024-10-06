@@ -72,9 +72,9 @@ class IPConsumer(AsyncWebsocketConsumer):
             await validate_ip(text_data_as_json)
             logger.info(f"data validation success include true schema with valid public ips")
             ips = text_data_as_json.get("ips")
-            for ip in ips:
-                logger.info(f"start fire background task for {ip}")
-                asyncio.create_task(self.send_ip_info(ip))
+            tasks = [self.send_ip_info(ip) for ip in ips]
+            logger.info(f"start fire background tasks for ips {ips}")
+            asyncio.gather(**tasks)
             
         except json.JSONDecodeError as exc:
             logger.error(f"parsed data can't converted to json")
