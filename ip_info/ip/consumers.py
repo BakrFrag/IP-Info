@@ -7,7 +7,6 @@ from .utils import validate_ip
 
 class EchoConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("get connected")
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -39,7 +38,6 @@ class EchoConsumer(AsyncWebsocketConsumer):
                 "message": "invalid data"
             }))
         except ValidationError as exc:
-            print("invalid ip address")
             await self.send(text_data = json.dumps({
                 "status":"error",
                 "message": exc.message
