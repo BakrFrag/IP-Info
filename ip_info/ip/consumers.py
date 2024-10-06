@@ -86,7 +86,8 @@ class IPConsumer(AsyncWebsocketConsumer):
             logger.error(f"parsed data not match json schema or include wrong ips or include private ips")
             await self.send(text_data = json.dumps({
                 "status":"error",
-                "message": exc.message
+                "message": exc.message,
+                "path": exc.path
             }))
         
     async def send_ip_info(self, ip):
