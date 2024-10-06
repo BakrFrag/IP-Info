@@ -55,36 +55,21 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = 'ip_info.asgi.application'
-load_dotenv()
-print(load_dotenv())
-print("host:",os.getenv("REDIS_HOST"))
-print("password:",os.getenv("REDIS_PASSWORD"))
 
 #Channel Layer 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [{
-#                 "host": os.getenv("REDIS_HOST"),
-#                 "password": os.getenv("REDIS_PASSWORD")
-#             }]
-#         }
-#     },
-# }
-
-#Channel Layer 
-CHANNEL_LAYER = {
+CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [{
-                "host": "127.0.0.1",
-                "password": "147258369"
+                "host": os.getenv("REDIS_HOST"),
+                "password": os.getenv("REDIS_PASSWORD")
             }]
         }
     },
 }
+
+
 LOGGING = {
     'version': 1,  
     'disable_existing_loggers': False,  
