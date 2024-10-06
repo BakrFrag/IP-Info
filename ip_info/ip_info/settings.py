@@ -6,11 +6,14 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+KEY = os.getenv("SECRET_KEY")
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_DB = os.getenv("REDIS_DB_INDEX")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -23,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'ip'
 ]
 
@@ -62,13 +66,22 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [{
-                "host": os.getenv("REDIS_HOST"),
-                "password": os.getenv("REDIS_PASSWORD")
+                "host": REDIS_HOST,
+                "password": REDIS_PORT
             }]
         }
     },
 }
 
+# Celery settings
+CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+# celery serializer format 
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
 
 LOGGING = {
     'version': 1,  
