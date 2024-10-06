@@ -5,7 +5,7 @@ from typing import Dict
 import httpx
 from jsonschema import ValidationError
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .utils import validate_ip
+from ip.utils import validate_ip
 
 logger = logging.getLogger('ip_logger')
 
