@@ -21,8 +21,8 @@ class IPConsumer(AsyncWebsocketConsumer):
         logger.info(f"WebSocket connected from {self.scope['client']}")
         await self.accept()
 
-    async def disconnect(self, close_code):
-        logger.debug(f"web socket disconnect with code {close_code} from {self.scope['client']}")
+    async def disconnect(self):
+        logger.debug(f"web socket disconnect from {self.scope['client']}")
         pass
     
     async def get_ip_data(self, ip: str) -> Dict[str, str]:
