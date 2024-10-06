@@ -50,6 +50,7 @@ def fetch_ip_info(self, ip, channel_name):
 
     logger.info(f"start process for sending ip data {ip_data} to channel name {channel_name}")
     channel_layer = get_channel_layer()
+    logger.debug(f"channel layer {channel_layer}")
     async_to_sync(channel_layer.send)(channel_name, {
         "type": "send_ip_info",  # Triggers 'send_ip_info' method in WebSocket consumer
         "message": json.dumps({"status": status, **ip_data})
