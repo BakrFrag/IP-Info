@@ -32,7 +32,7 @@ class IPConsumer(AsyncWebsocketConsumer):
             ip: str 
                 ip to collect data about it
         Raises:
-            httpx:httperr exception when connection error happens
+            httpx: httperr exception when connection error happens
         
         Returns:
             ip info: Dict[str, str]
