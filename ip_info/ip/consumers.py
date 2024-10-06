@@ -46,12 +46,14 @@ class IPConsumer(AsyncWebsocketConsumer):
                     response.raise_for_status()
                     ip_data = response.json()
                     logger.info(f"info collected for ip {ip} with data as {ip_data}")
-                    return {"ip": ip, "ip_data": ip_data}
+                    return {"ip": ip, "data": ip_data}
                 
         except httpx.HTTPStatusError as exc:
+
             status_code = exc.response.status_code
-            logger.error(f"collect info for ip {ip} failed with status code {status_code}")
-            return {"ip": ip, "error": exc.response.status_code}
+            exc_error = exc.response.json().get("error")
+            logger.error(f"collect info for ip {ip} failed with status code {status_code} with error {exc_error}")
+            return {"ip": ip, "error": exc_error}
         
         except (httpx.ConnectError, httpx.TimeoutError) as exc:
             logger.error(f"connection error while collect data for ip {ip} with {str(exc)}")
