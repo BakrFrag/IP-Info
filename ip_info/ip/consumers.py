@@ -83,11 +83,10 @@ class IPConsumer(AsyncWebsocketConsumer):
                 "message": "invalid data"
             }))
         except ValidationError as exc:
-            logger.error(f"parsed data not match json schema or include wrong ips or include private ips")
+            logger.error(f"parsed data not parsed as {exc.message}")
             await self.send(text_data = json.dumps({
                 "status":"error",
                 "message": exc.message,
-                "path": exc.path
             }))
         
     async def send_ip_info(self, ip):

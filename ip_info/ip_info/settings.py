@@ -11,7 +11,8 @@ REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 REDIS_DB = os.getenv("REDIS_DB_INDEX")
 REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
-
+print(REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_DB)
+SECRET_KEY = KEY
 
 DEBUG = True
 ALLOWED_HOSTS = []
@@ -67,7 +68,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             "hosts": [{
                 "host": REDIS_HOST,
-                "password": REDIS_PORT
+                "password": REDIS_PASSWORD
             }]
         }
     },
@@ -76,6 +77,8 @@ CHANNEL_LAYERS = {
 # Celery settings
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+print(CELERY_RESULT_BACKEND)
+print(CELERY_BROKER_URL)
 # celery serializer format 
 
 CELERY_ACCEPT_CONTENT = ['json']

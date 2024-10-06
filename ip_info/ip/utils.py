@@ -11,10 +11,10 @@ def is_ipv4(instance):
     """
     try:
         ip = ipaddress.IPv4Address(instance)
-        if ip.is_private:
-            raise ValidationError(f"IP {instance} is a private IP address.")
         if ip.is_loopback:
             raise ValidationError(f"IP {instance} is a loopback IP address.")
+        if ip.is_private:
+            raise ValidationError(f"IP {instance} is a private IP address.")
         return True
     except ValueError:
         return False
@@ -28,10 +28,10 @@ def is_ipv6(instance):
     """
     try:
         ip = ipaddress.IPv6Address(instance)
-        if ip.is_private:
-            raise ValidationError(f"IP {instance} is a private IP address.")
         if ip.is_loopback:
             raise ValidationError(f"IP {instance} is a loopback IP address.")
+        if ip.is_private:
+            raise ValidationError(f"IP {instance} is a private IP address.")
         return True
     except ValueError:
         return False
